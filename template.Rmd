@@ -99,6 +99,11 @@ litters_df_base =
 ```
 
 
+## What about data exporting?
+
+```{r}
+write_csv(fotr_df, "fotr_df.csv")
+```
 
 
 
