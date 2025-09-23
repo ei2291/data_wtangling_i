@@ -38,6 +38,28 @@ skimr::skim(litters_df)
 ```
 
 
+## Fix the missigness
+
+```{r}
+litters_df = 
+  read_csv("FAS_litters.csv", na = c("NA", ".", ""))
+```
+
+#import `FAS_pups.csv` and skip the first 3 lines
+
+```{r}
+pups_df=
+  read_csv(
+    "FAS_pups.csv",
+    skip = 3, 
+    na = c("NA", ".", "")
+  )   
+
+pups_df=
+  janitor::clean_names(pups_df)
+```
+
+
 
 
 
