@@ -175,6 +175,19 @@ litters_df=
   )
 ```
 
+Learning Assessment 3
+
+```{r}
+pups_df=
+  read_csv("FAS_pups.csv", na=c("NA", ".", ""), skip=3) |> 
+  janitor::clean_names() |> 
+  filter(sex==1) |> 
+  select(-pd_ears) |> 
+  mutate(
+    pv_pivot_ge7 = pd_pivot >=7
+  )
+```
+
 
 
 

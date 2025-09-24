@@ -619,3 +619,25 @@ litters_df=
     ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Learning Assessment 3
+
+``` r
+pups_df=
+  read_csv("FAS_pups.csv", na=c("NA", ".", ""), skip=3) |> 
+  janitor::clean_names() |> 
+  filter(sex==1) |> 
+  select(-pd_ears) |> 
+  mutate(
+    pv_pivot_ge7 = pd_pivot >=7
+  )
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
