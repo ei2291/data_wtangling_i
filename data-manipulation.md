@@ -566,3 +566,56 @@ arrange(litters_df, desc(group), pups_born_alive)
     ## 10 Mod7  #106                21.7        37.8          20               5
     ## # ℹ 39 more rows
     ## # ℹ 2 more variables: pups_dead_birth <dbl>, pups_survive <dbl>
+
+## PIPES
+
+let’s see a bad way to do things
+
+``` r
+litters_df=
+  read_csv("FAS_litters.csv", na=c("Na", ".", ""))
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (4): Group, Litter Number, GD0 weight, GD18 weight
+    ## dbl (4): GD of Birth, Pups born alive, Pups dead @ birth, Pups survive
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+litters_df=
+  janitor::clean_names(litters_df)
+
+litters_df=
+  select(litters_df, group, litter_number, starts_with("gd"))
+
+litters_df=
+  drop_na(litters_df)
+```
+
+Don’t do the top. To avoid this and nesting, use PIPES!!!
+
+PIPES!! easiest and clearest way!
+
+``` r
+litters_df=
+  read_csv("FAS_litters.csv", na=c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(group, litter_number, starts_with("gd")) |> 
+  drop_na() |> 
+  mutate(
+    wt_gain=gd18_weight - gd0_weight
+  )
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.

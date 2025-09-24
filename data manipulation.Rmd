@@ -142,6 +142,38 @@ arrange(litters_df, desc(group), pups_born_alive)
 ```
 
 
+## PIPES
+
+let's see a bad way to do things
+```{r}
+litters_df=
+  read_csv("FAS_litters.csv", na=c("Na", ".", ""))
+
+litters_df=
+  janitor::clean_names(litters_df)
+
+litters_df=
+  select(litters_df, group, litter_number, starts_with("gd"))
+
+litters_df=
+  drop_na(litters_df)
+
+```
+
+Don't do the top. To avoid this and nesting, use PIPES!!!
+
+PIPES!! easiest and clearest way!
+
+```{r}
+litters_df=
+  read_csv("FAS_litters.csv", na=c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(group, litter_number, starts_with("gd")) |> 
+  drop_na() |> 
+  mutate(
+    wt_gain=gd18_weight - gd0_weight
+  )
+```
 
 
 
