@@ -71,3 +71,82 @@ Pivot wider for human readability.
 |:----------|----:|-----:|
 | treatment | 4.0 |   10 |
 | control   | 4.2 |    5 |
+
+\##Bind tables.
+
+``` r
+fellowship_ring=
+  read_excel("LOTR_Words.xlsx", range = "B3:D6") |>   mutate (movie="fellowship_ring")
+
+two_towers=
+  read_excel("LOTR_Words.xlsx", range = "F3:H6") |>   mutate (movie="two_towers")
+
+return_king=
+  read_excel("LOTR_Words.xlsx", range = "j3:L6") |>   mutate (movie="return_king")
+
+lotr_df=
+  bind_rows(fellowship_ring, two_towers, return_king) |> 
+  janitor:: clean_names() |> 
+  pivot_longer(
+    cols = female:male,
+    names_to = "sex",
+    values_to = "words"
+  ) |> 
+  relocate(movie) |> 
+  mutate (race = str_to_lower(race)
+          )
+```
+
+\##Join FAS datasets
+
+Import `litters` dataset.
+
+``` r
+litters_df=
+  read_csv("FAS_litters.csv", na=c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  mutate (wt_gain = gd18_weight - gd0_weight) |> 
+  separate(
+    group, into=c("dose", "day_of_treatment"), sep=3
+  )
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Import `pups` next!
+
+``` r
+pups_df=
+  read_csv("FAS_pups.csv", na=c("NA", ".", ""),skip=3 ) |> 
+  janitor::clean_names() |> 
+  mutate (
+    sex = case_match(
+    sex,
+    1 ~ "male",
+    2 ~ "female"
+  ))
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Join the datasets!
+
+``` r
+fas_df=
+  left_join(pups_df, litters_df, by = "litter_number") |> 
+  relocate(litter_number, dose, day_of_treatment)
+```
